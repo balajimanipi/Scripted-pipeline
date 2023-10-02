@@ -1,0 +1,30 @@
+node 
+{
+    stage('Continues Download') 
+    {
+        git 'https://github.com/balajimanipi/java-pro.git'
+    }
+    
+    stage('Continues Build') 
+    {
+        sh 'mvn package'
+    }
+    
+    stage('Continues Deployment') 
+    {
+        sh 'scp /var/lib/jenkins/workspace/scripted-pipeline/webapp/target/webapp.war root@172.31.86.135:/var/lib/tomcat9/webapps/testenv.war'
+    }
+    
+    stage('Continues Testing') 
+    {
+        git 'https://github.com/balajimanipi/FunctionlTesting.git'
+        echo "Testing code cloned"
+        sh 'pwd'
+        sh 'java -jar testing.jar'
+    }
+    
+    stage('Continues Delivery') 
+    {
+        sh 'scp /var/lib/jenkins/workspace/scripted-pipeline/webapp/target/webapp.war root@172.31.34.141:/var/lib/tomcat9/webapps/prodenv.war'
+    }
+}
